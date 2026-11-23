@@ -18,7 +18,8 @@
 #   added    linux-image-amd64 + live-boot, overlays/amd64-vm (mode switch,
 #            keyboard bridge, MCU stand-in)
 #
-# Run as root (under WSL: wsl -u root). Inputs, overridable from the environment:
+# Normally run through build.sh, which fetches the pinned sources and puts this file
+# and overlays/amd64-vm in place. Run as root. Inputs, overridable from the environment:
 #   FLIPCTL_DIR  flipctl-slint checkout          (default ../flipctl-slint)
 #   APPS_DIR     flipctl-apps checkout           (default ../flipctl-apps)
 #   EXPORT_DIR   where the finished ISO is copied; under WSL it defaults to the
@@ -247,7 +248,7 @@ in_root() {
 # --- preflight ----------------------------------------------------------------
 
 step "preflight"
-[ "$(id -u)" -eq 0 ] || die "run as root (under WSL: wsl -u root)"
+[ "$(id -u)" -eq 0 ] || die "run as root: sudo $0"
 [ "$(uname -m)" = x86_64 ] || die "this builds amd64 natively, which needs an x86_64 builder"
 case "$HERE" in
 	/mnt/*) die "$HERE is on a Windows drive; move the workspace into the Linux filesystem" ;;
@@ -465,14 +466,20 @@ step "ISO"
 mkdir -p "$IMG_OUT"
 ISO=$(realpath "$IMG_OUT")/$ISO_NAME
 grub-mkrescue -o "$ISO" "$ISODIR" -- -volid "$ISO_VOLID"
-# Root built it; hand it and the cargo cache back to whoever owns the checkout.
-chown -R --reference="$HERE" "$IMG_OUT" "$FLIPCTL_DIR/target"
+# Root built it; hand it and the cargo cache back to whoever ran sudo, or failing
+# that to whoever owns the checkout.
+owner=$(stat -c %u:%g "$HERE")
+[ -z "${SUDO_UID:-}" ] || owner=$SUDO_UID:$SUDO_GID
+chown -R "$owner" "$IMG_OUT" "$FLIPCTL_DIR/target"
 echo "$(du -h "$ISO" | cut -f1) $ISO"
 
 # --- export -----------------------------------------------------------------------
 
-if [ -z "$EXPORT_DIR" ] && command -v wslpath >/dev/null; then
-	profile=$(cd /mnt/c && cmd.exe /c 'echo %USERPROFILE%' | tr -d '\r')
+# By full path: sudo resets PATH, which drops the Windows directories WSL appends,
+# and cmd.exe is then "command not found".
+WIN_CMD=/mnt/c/Windows/System32/cmd.exe
+if [ -z "$EXPORT_DIR" ] && [ -x "$WIN_CMD" ]; then
+	profile=$(cd /mnt/c && "$WIN_CMD" /c 'echo %USERPROFILE%' | tr -d '\r')
 	EXPORT_DIR=$(wslpath "$profile")/Desktop
 fi
 if [ -n "$EXPORT_DIR" ]; then

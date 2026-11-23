@@ -1,4 +1,4 @@
 __pycache__/
 *.pyc
-build-amd64/
-out/
+# Flipper's sources and the whole build live here (build.sh)
+src/
