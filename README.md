@@ -24,6 +24,31 @@ This repository adds only the amd64 build and `overlays/amd64-vm`.
 
 ---
 
+## Preview
+
+All screenshots are from the ISO running in VirtualBox.
+
+### Handheld mode
+
+The Flipper One's 256x144 screen at 5x, driven by the keyboard and mouse.
+
+| | |
+|---|---|
+| ![Home screen](docs/screenshots/handheld-home.png) | ![Apps](docs/screenshots/handheld-apps.png) |
+| **Home screen**: battery, hostname and network | **Apps**: Flipper's prebuilt apps, by folder |
+| ![System Monitor](docs/screenshots/handheld-system-monitor.png) | ![Doom](docs/screenshots/handheld-doom.png) |
+| **System Monitor**, one of Flipper's ARM apps, emulated | **Doom** (Freedoom), playable |
+| ![Wi-Fi](docs/screenshots/handheld-wifi.png) | ![Boot menu](docs/screenshots/boot-menu.png) |
+| **Wi-Fi**: the simulated FlipperOne-Lab network | **Boot menu**: handheld or desktop mode |
+
+### Desktop mode
+
+Flipper's KDE Plasma profile: Breeze Dark, the Flipper One wallpaper, and autologin.
+
+![Desktop mode](docs/screenshots/desktop.png)
+
+---
+
 ## What you need
 
 - A 64-bit (x86_64) PC with **8 GB RAM** or more
