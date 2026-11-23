@@ -1,0 +1,9 @@
+// flipctl's Wi-Fi page drives NetworkManager through nmcli as `user`. Handheld mode
+// runs it in a seat session, which NetworkManager's defaults already allow; desktop
+// mode runs it headless as a service, with no session, which they refuse
+// ("Not authorized to control networking").
+polkit.addRule(function(action, subject) {
+    if (subject.user == "user" && action.id.indexOf("org.freedesktop.NetworkManager.") == 0)
+        return polkit.Result.YES;
+    return polkit.Result.NOT_HANDLED;
+});

@@ -1,0 +1,19 @@
+[Unit]
+Description=Simulated Wi-Fi access point FlipperOne-Lab (password flipperone)
+# Only what the script uses: the radios (modules-load) and resolved's list of
+# upstream DNS servers. Ordering against network.target or NetworkManager makes a
+# cycle (NetworkManager runs before network.target), and systemd breaks it by
+# dropping this unit at boot.
+After=systemd-modules-load.service systemd-resolved.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/flipper-wifi-sim.sh
+# Deleting the box hands the radio back and takes its end of the cable with it.
+ExecStopPost=-/usr/bin/ip netns delete flipper-ap
+ExecStopPost=-/usr/sbin/nft delete table ip flipper_wifi_sim
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

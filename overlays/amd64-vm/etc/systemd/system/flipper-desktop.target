@@ -1,0 +1,7 @@
+# Desktop mode: KDE Plasma through sddm (autologin as user, from overlays/profile-kde),
+# with flipctl kept running headless for its remote view on http://localhost:8899.
+[Unit]
+Description=Flipper One desktop mode (KDE Plasma, flipctl remote view)
+Wants=sddm.service flipctl-headless.service
+Conflicts=flipper-handheld.service
+After=flipper-handheld.service

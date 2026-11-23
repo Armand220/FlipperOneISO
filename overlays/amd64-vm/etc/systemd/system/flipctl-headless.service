@@ -1,0 +1,16 @@
+# flipctl with no panel and no buttons: the browser view is its only screen and its
+# only input. Desktop mode's flipctl, while Plasma owns the display.
+[Unit]
+Description=flipctl remote view on http://localhost:8899 (desktop mode)
+After=network.target flipper-handheld.service flipper-mcu-mock.service
+Conflicts=flipper-handheld.service
+
+[Service]
+Type=simple
+User=user
+Group=user
+WorkingDirectory=/usr/share/flipctl
+Environment=FLIPCTL_APPS_URL=file:///usr/share/flipctl/catalogue/apps.toml
+ExecStart=/usr/bin/flipctl --headless --remote [::]:8899 --assets /usr/share/flipctl/assets/remote
+Restart=on-failure
+RestartSec=2

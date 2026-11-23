@@ -1,0 +1,10 @@
+[Unit]
+Description=Start the Flipper One mode named by flipper.mode= on the kernel command line
+After=systemd-user-sessions.service systemd-logind.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/flipper-boot-mode.sh
+
+[Install]
+WantedBy=multi-user.target

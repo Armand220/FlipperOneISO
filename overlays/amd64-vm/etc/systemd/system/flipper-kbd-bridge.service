@@ -1,0 +1,13 @@
+# Pulled in by flipper-handheld.service and stopped with it: in desktop mode Plasma
+# gets the keyboard as a keyboard.
+[Unit]
+Description=PC keyboard as Flipper One buttons (handheld mode)
+PartOf=flipper-handheld.service
+After=systemd-udevd.service systemd-modules-load.service flipper-mcu-mock.service
+Before=flipper-handheld.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/bin/flipper-kbd-bridge.py
+Restart=on-failure
+RestartSec=1

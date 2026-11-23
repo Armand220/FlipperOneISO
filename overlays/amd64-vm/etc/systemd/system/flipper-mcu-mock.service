@@ -1,0 +1,14 @@
+[Unit]
+Description=Flipper One MCU stand-in (battery, software buttons, serial CLI)
+After=systemd-udevd.service systemd-modules-load.service
+Before=flipper-handheld.service flipctl-headless.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/bin/flipper-mcu-mock.py
+RuntimeDirectory=flipper-mcu
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
